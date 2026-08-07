@@ -1,0 +1,222 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>USDA Crop Monitor</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"
+    ></script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"
+    ></script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"
+    ></script>
+</head>
+
+<body>
+
+<header>
+    <h1>USDA Crop Monitor</h1>
+
+    <p>
+        Weekly crop condition and progress relative to the
+        2015–2025 historical record
+    </p>
+</header>
+
+<section class="controls">
+
+    <div class="control">
+        <label for="metric">Data type</label>
+
+        <select id="metric">
+            <option value="condition">Condition</option>
+            <option value="progress">Progress</option>
+        </select>
+    </div>
+
+    <div class="control">
+        <label for="crop">Crop</label>
+
+        <select id="crop">
+            <option value="corn">Corn</option>
+            <option value="soy">Soybeans</option>
+            <option value="wheat">Winter Wheat</option>
+            <option value="cotton">Cotton</option>
+        </select>
+    </div>
+
+    <div class="control">
+        <label for="year">Year</label>
+
+        <select id="year">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+            <option value="2019">2019</option>
+            <option value="2018">2018</option>
+            <option value="2017">2017</option>
+            <option value="2016">2016</option>
+            <option value="2015">2015</option>
+        </select>
+    </div>
+
+    <div class="control">
+        <label for="week">USDA week</label>
+
+        <select id="week"></select>
+    </div>
+
+    <div class="control">
+        <label for="mapMetric">Map</label>
+
+        <select id="mapMetric">
+            <option value="percentile">
+                Historical percentile
+            </option>
+
+            <option value="value">
+                Observed value
+            </option>
+
+            <option value="anomaly">
+                Departure from historical mean
+            </option>
+        </select>
+    </div>
+
+</section>
+
+<main class="layout">
+
+    <section class="panel map-panel">
+
+        <svg
+            id="map"
+            viewBox="0 0 975 610"
+            aria-label="United States county crop map"
+        ></svg>
+
+        <div
+            id="legend"
+            class="legend"
+        ></div>
+
+    </section>
+
+    <section class="panel detail-panel">
+
+        <h2 id="countyTitle">
+            Select a county
+        </h2>
+
+        <div
+            id="countySummary"
+            class="detail-summary"
+        >
+            Click a county to view its historical trajectory.
+        </div>
+
+        <div class="metrics">
+
+            <div class="metric">
+                <div
+                    id="valueLabel"
+                    class="metric-label"
+                >
+                    Condition
+                </div>
+
+                <div
+                    id="conditionValue"
+                    class="metric-value"
+                >
+                    —
+                </div>
+            </div>
+
+            <div class="metric">
+                <div class="metric-label">
+                    Percentile
+                </div>
+
+                <div
+                    id="percentileValue"
+                    class="metric-value"
+                >
+                    —
+                </div>
+            </div>
+
+            <div class="metric">
+                <div class="metric-label">
+                    vs. mean
+                </div>
+
+                <div
+                    id="anomalyValue"
+                    class="metric-value"
+                >
+                    —
+                </div>
+            </div>
+
+        </div>
+
+        <div id="chart"></div>
+
+        <div class="chart-controls control">
+
+            <label for="compareYear">
+                Compare with year
+            </label>
+
+            <select
+                id="compareYear"
+                disabled
+            >
+                <option value="">
+                    None
+                </option>
+            </select>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div
+    id="tooltip"
+    class="tooltip"
+></div>
+
+<div class="note">
+    County values are sampled from the USDA NASS Crop Progress and
+    Condition gridded surface at deterministic county representative
+    points. Historical statistics use completed seasons 2015–2025.
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

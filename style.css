@@ -1,0 +1,189 @@
+:root {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    color: #202124;
+    background: #f4f5f3;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+header {
+    background: #ffffff;
+    border-bottom: 1px solid #d8d8d8;
+    padding: 18px 24px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+header p {
+    margin: 5px 0 0;
+    color: #666;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px 24px;
+    background: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+.control {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.control label {
+    font-size: 12px;
+    color: #666;
+}
+
+select {
+    padding: 7px 10px;
+    font-size: 14px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns:
+        minmax(500px, 1fr)
+        minmax(360px, 480px);
+
+    gap: 18px;
+    padding: 18px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.map-panel {
+    padding: 12px;
+}
+
+#map {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.county {
+    stroke: #ffffff;
+    stroke-width: 0.15;
+    cursor: pointer;
+}
+
+.county:hover {
+    stroke: #222;
+    stroke-width: 1;
+}
+
+.state-boundary {
+    fill: none;
+    stroke: #555;
+    stroke-width: 0.8;
+    pointer-events: none;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin: 8px 0;
+    font-size: 11px;
+}
+
+.legend-item {
+    text-align: center;
+}
+
+.legend-color {
+    width: 54px;
+    height: 12px;
+}
+
+.detail-panel {
+    padding: 18px;
+}
+
+.detail-panel h2 {
+    margin: 0 0 4px;
+}
+
+.detail-summary {
+    color: #555;
+    margin-bottom: 14px;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.metric {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.metric-label {
+    font-size: 11px;
+    color: #777;
+}
+
+.metric-value {
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+#chart {
+    min-height: 390px;
+}
+
+.chart-controls {
+    margin-top: 12px;
+}
+
+.tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(20, 20, 20, 0.92);
+    color: white;
+    padding: 8px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    line-height: 1.45;
+    display: none;
+    z-index: 100;
+}
+
+.note {
+    font-size: 11px;
+    color: #777;
+    padding: 0 24px 18px;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}
