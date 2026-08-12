@@ -187,3 +187,101 @@ select {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ---------------------------------------------------------
+   Compact desktop layout
+   Keep the complete monitor visible within the browser.
+   --------------------------------------------------------- */
+
+@media (min-width: 901px) {
+
+    header {
+        padding: 10px 18px;
+    }
+
+    header h1 {
+        font-size: 22px;
+    }
+
+    header p {
+        margin-top: 3px;
+    }
+
+    .controls {
+        gap: 12px;
+        padding: 10px 18px;
+    }
+
+    .layout {
+        gap: 12px;
+        padding: 12px;
+
+        /*
+         * Leave room for header, controls and footer note.
+         * The main map/chart area then uses the remaining
+         * browser height.
+         */
+        height: calc(100vh - 185px);
+        min-height: 560px;
+    }
+
+    .map-panel {
+        padding: 8px;
+
+        display: flex;
+        flex-direction: column;
+
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    #map {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    .legend {
+        flex: 0 0 auto;
+        margin: 5px 0 2px;
+    }
+
+    .detail-panel {
+        padding: 14px;
+
+        display: flex;
+        flex-direction: column;
+
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .detail-summary {
+        margin-bottom: 10px;
+    }
+
+    .metrics {
+        margin-bottom: 8px;
+    }
+
+    .metric {
+        padding: 8px;
+    }
+
+    #chart {
+        flex: 1 1 auto;
+        min-height: 280px;
+        height: 100%;
+    }
+
+    .chart-controls {
+        flex: 0 0 auto;
+        margin-top: 6px;
+    }
+
+    .note {
+        padding: 0 18px 8px;
+    }
+}

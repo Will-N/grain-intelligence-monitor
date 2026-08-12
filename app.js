@@ -25,7 +25,8 @@ const state = {
     selectedGeoid: null,
     countyHistory: null,
 
-    historyCache: new Map()
+    historyCache: new Map(),
+    yieldAnalogCache: new Map()
 };
 
 
@@ -469,9 +470,25 @@ function colorFor(
             return "#e5e5e5";
         }
 
-        return d3.interpolateRdYlGn(
-            record.p / 100
-        );
+        const percentile =
+        record.p;
+
+    const representative =
+        percentile < 10
+            ? 5
+            : percentile < 25
+            ? 17.5
+            : percentile < 50
+            ? 37.5
+            : percentile < 75
+            ? 62.5
+            : percentile < 90
+            ? 82.5
+            : 95;
+
+    return d3.interpolateRdYlGn(
+        representative / 100
+    );
     }
 
     if (
@@ -723,11 +740,12 @@ function drawLegend() {
     ) {
 
         values = [
-            [10, "0–20"],
-            [30, "20–40"],
-            [50, "40–60"],
-            [70, "60–80"],
-            [90, "80–100"]
+            [5, "0–10"],
+        [17.5, "10–25"],
+        [37.5, "25–50"],
+        [62.5, "50–75"],
+        [82.5, "75–90"],
+        [95, "90–100"]
         ];
     }
 
@@ -878,6 +896,55 @@ async function loadStateHistory(
 }
 
 
+async function loadYieldAnalogs() {
+
+    if (
+        state.metric !== "condition"
+    ) {
+        return null;
+    }
+
+    if (
+        state.yieldAnalogCache.has(
+            state.crop
+        )
+    ) {
+        return state.yieldAnalogCache.get(
+            state.crop
+        );
+    }
+
+    const url =
+        `data/yield_analogs/${state.crop}.json`;
+
+    const response =
+        await fetch(url);
+
+    if (!response.ok) {
+        console.warn(
+            `Could not load ${url}`
+        );
+
+        state.yieldAnalogCache.set(
+            state.crop,
+            null
+        );
+
+        return null;
+    }
+
+    const data =
+        await response.json();
+
+    state.yieldAnalogCache.set(
+        state.crop,
+        data
+    );
+
+    return data;
+}
+
+
 async function selectCounty(
     geoid
 ) {
@@ -902,6 +969,9 @@ async function selectCounty(
             stateCode
         );
 
+    const yieldAnalogBundle =
+        await loadYieldAnalogs();
+
     const compact =
         stateBundle.counties[
             geoid
@@ -923,7 +993,12 @@ async function selectCounty(
             compact.h,
 
         years:
-            compact.y
+            compact.y,
+
+        yieldAnalog:
+            yieldAnalogBundle?.counties?.[
+                geoid
+            ] || null
     };
 
     populateCompareYears();
@@ -1282,6 +1357,73 @@ function drawCountyChart() {
             }
         }
     ];
+
+    if (
+        state.metric === "condition" &&
+        state.countyHistory.yieldAnalog
+    ) {
+
+        const analog =
+            state.countyHistory.yieldAnalog;
+
+        const bestYear =
+            Number(
+                analog.best.year
+            );
+
+        const worstYear =
+            Number(
+                analog.worst.year
+            );
+
+        if (
+            bestYear !== state.year
+        ) {
+
+            const best =
+                trajectoryForYear(
+                    bestYear
+                );
+
+            if (best.x.length) {
+                traces.push({
+                    x: best.x,
+                    y: best.y,
+                    mode: "lines",
+                    name:
+                        `${bestYear} — Best yield year`,
+                    line: {
+                        width: 2
+                    }
+                });
+            }
+        }
+
+        if (
+            worstYear !== state.year &&
+            worstYear !== bestYear
+        ) {
+
+            const worst =
+                trajectoryForYear(
+                    worstYear
+                );
+
+            if (worst.x.length) {
+                traces.push({
+                    x: worst.x,
+                    y: worst.y,
+                    mode: "lines",
+                    name:
+                        `${worstYear} — Worst yield year`,
+                    line: {
+                        width: 2
+                    }
+                });
+            }
+        }
+    }
+
 
     const compareYear =
         compareYearSelect.value;
